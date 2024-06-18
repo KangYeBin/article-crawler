@@ -2,7 +2,7 @@ name: Run Crawler Script
 
 on:
   schedule:
-    - cron: '0 15 * * *' # 매일 자정 UTC 시간으로 설정, 한국시간 자정은 UTC 15시
+    - cron: "0 15 * * *" # 매일 자정 UTC 시간으로 설정, 한국시간 자정은 UTC 15시
   workflow_dispatch: # 수동으로 실행할 수 있는 옵션
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'  # 원하는 Python 버전으로 변경
+          python-version: "3.8" # 원하는 Python 버전으로 변경
 
       - name: Install dependencies
         run: |
