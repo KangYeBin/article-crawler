@@ -196,7 +196,6 @@ def get_news_list(date):
                 driver.quit()
                 kill_chromedriver_processes()
                 driver = create_webdriver()
-                return
 
             try:
                 link = headline.parent.a['href']
