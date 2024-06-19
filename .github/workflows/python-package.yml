@@ -37,9 +37,6 @@ jobs:
           sudo mv /tmp/chromedriver /usr/local/bin/chromedriver
           sudo chmod +x /usr/local/bin/chromedriver
 
-      - name: Set up ChromeDriver
-        uses: nanasess/setup-chromedriver@v1
-
       - name: Run crawler script
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
