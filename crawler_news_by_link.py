@@ -24,6 +24,11 @@ mycursor = mydb.cursor(prepared=True)
 
 def create_webdriver():
     option = webdriver.ChromeOptions()
+    option.add_argument('--headless')
+    option.add_argument('--no-sandbox')
+    option.add_argument('--disable-dev-shm-usage')
+    option.add_argument('--remote-debugging-port=3000')
+
     option.add_experimental_option('detach', True)
     service = webdriver.ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=option)
