@@ -30,12 +30,16 @@ jobs:
 
       - name: Download ChromeDriver
         run: |
-          # Get Chrome version
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          # Get Chrome version using product version
+          CHROME_VERSION=$(google-chrome --product-version)
           echo "Chrome version: $CHROME_VERSION"
           
+          # Get major version number only
+          CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
+          echo "Chrome major version: $CHROME_MAJOR_VERSION"
+          
           # Get corresponding ChromeDriver version
-          DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
+          DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION")
           echo "ChromeDriver version: $DRIVER_VERSION"
 
           # Download and unzip ChromeDriver
@@ -45,7 +49,7 @@ jobs:
           sudo chmod +x /usr/local/bin/chromedriver
 
           shell: /usr/bin/bash -e {0}
-
+          
       - name: Run crawler script
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
