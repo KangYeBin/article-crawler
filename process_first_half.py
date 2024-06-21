@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options as ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import WebDriverException
 from bs4 import BeautifulSoup
@@ -34,6 +33,7 @@ def create_webdriver():
     service = webdriver.ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=option)
     return driver
+
 
 def kill_chromedriver_processes():
     for proc in psutil.process_iter():
@@ -196,25 +196,28 @@ def get_news_list(date):
         first_half_links = total_links[:mid_index]
         second_half_links = total_links[mid_index:]
 
-        process_article_links(first_half_links)
+        # 추출한 정보 출력
+        for i, link in enumerate(first_half_links):
+            if i > 0 and i % 10 == 0:  # 10개의 URL마다 WebDriver 재생성
+                driver.quit()
+                kill_chromedriver_processes()
+                driver = create_webdriver()
 
+            try:
+                get_article_content(link)
+            except WebDriverException as e:
+                print(f"Exception occurred: {e}. Restarting WebDriver.")
+                driver.quit()
+                kill_chromedriver_processes()
+                driver = create_webdriver()
+                get_article_content(link)
+
+            time.sleep(1)
+                  
     finally:
         driver.quit()
 
-def process_article_links(links):
-    for link in enumerate(links):
-        try:
-            get_article_content(link)
-        except WebDriverException as e:
-            print(f"Exception occurred: {e}. Restarting WebDriver.")
-            if driver:
-                driver.quit()
-            kill_chromedriver_processes()
-            driver = create_webdriver()
-            get_article_content(link)
-
-        time.sleep(1)
-
+# get_news_list(datetime.today().strftime('%Y%m%d'))
 get_news_list((datetime.today()-timedelta(days=1)).strftime('%Y%m%d'))
 
 mydb.commit()
