@@ -197,7 +197,9 @@ def get_news_list(date):
         second_half_links = total_links[mid_index:]
 
         process_article_links(first_half_links)
-                  
+
+    finally:
+        driver.quit()
 
 def process_article_links(links):
     try:
