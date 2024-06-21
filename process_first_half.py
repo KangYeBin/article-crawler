@@ -213,7 +213,8 @@ def process_article_links(links):
                 get_article_content(link)
             except WebDriverException as e:
                 print(f"Exception occurred: {e}. Restarting WebDriver.")
-                driver.quit()
+                if driver:
+                    driver.quit()
                 kill_chromedriver_processes()
                 driver = create_webdriver()
                 get_article_content(link)
