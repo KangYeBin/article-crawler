@@ -201,12 +201,7 @@ def get_news_list(date):
         driver.quit()
 
 def process_article_links(links):
-    for i, link in enumerate(links):
-        if i > 0 and i % 10 == 0:  # 10개의 URL마다 WebDriver 재생성
-            driver.quit()
-            kill_chromedriver_processes()
-            driver = create_webdriver()
-
+    for link in enumerate(links):
         try:
             get_article_content(link)
         except WebDriverException as e:

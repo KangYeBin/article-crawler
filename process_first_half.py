@@ -202,26 +202,18 @@ def get_news_list(date):
         driver.quit()
 
 def process_article_links(links):
-    try:
-        for i, link in enumerate(links):
-            if i > 0 and i % 10 == 0:  # 10개의 URL마다 WebDriver 재생성
+    for link in enumerate(links):
+        try:
+            get_article_content(link)
+        except WebDriverException as e:
+            print(f"Exception occurred: {e}. Restarting WebDriver.")
+            if driver:
                 driver.quit()
-                kill_chromedriver_processes()
-                driver = create_webdriver()
+            kill_chromedriver_processes()
+            driver = create_webdriver()
+            get_article_content(link)
 
-            try:
-                get_article_content(link)
-            except WebDriverException as e:
-                print(f"Exception occurred: {e}. Restarting WebDriver.")
-                if driver:
-                    driver.quit()
-                kill_chromedriver_processes()
-                driver = create_webdriver()
-                get_article_content(link)
-
-            time.sleep(1)
-    finally:
-        driver.quit()
+        time.sleep(1)
 
 get_news_list((datetime.today()-timedelta(days=1)).strftime('%Y%m%d'))
 
