@@ -198,8 +198,6 @@ def get_news_list(date):
 
         process_article_links(first_half_links)
                   
-    finally:
-        driver.quit()
 
 def process_article_links(links):
     try:
