@@ -24,11 +24,6 @@ mycursor = mydb.cursor(prepared=True)
 
 def create_webdriver():
     option = webdriver.ChromeOptions()
-    option.add_argument('--headless')
-    option.add_argument('--no-sandbox')
-    option.add_argument('--disable-dev-shm-usage')
-    option.add_argument('--remote-debugging-port=3000')
-
     option.add_experimental_option('detach', True)
     service = webdriver.ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=option)
@@ -190,16 +185,26 @@ def get_news_list(date):
         
         kill_chromedriver_processes()
 
-        # 추출한 정보 출력
-        for i, headline in enumerate(headlines):
+        # 링크 리스트 나누기
+        total_links = [headline.parent.a['href'] for headline in headlines]
+        mid_index = len(total_links) // 2
+        first_half_links = total_links[:mid_index]
+        second_half_links = total_links[mid_index:]
+
+        process_article_links(first_half_links)
+                  
+    finally:
+        driver.quit()
+
+def process_article_links(links):
+    try:
+        for i, link in enumerate(links):
             if i > 0 and i % 10 == 0:  # 10개의 URL마다 WebDriver 재생성
                 driver.quit()
                 kill_chromedriver_processes()
                 driver = create_webdriver()
-                return
 
             try:
-                link = headline.parent.a['href']
                 get_article_content(link)
             except WebDriverException as e:
                 print(f"Exception occurred: {e}. Restarting WebDriver.")
@@ -209,22 +214,9 @@ def get_news_list(date):
                 get_article_content(link)
 
             time.sleep(1)
-                  
     finally:
         driver.quit()
 
-
-# # 날짜 범위 설정 (start_date부터 end_date까지)
-# start_date = datetime.strptime('20240617', '%Y%m%d')
-# end_date = datetime.strptime('20240617', '%Y%m%d')
-# date_generated = [start_date + timedelta(days=x) for x in range(0, (end_date - start_date).days + 1)]
-
-# # 날짜를 역순으로 처리하여 크롤링
-# for date in sorted(date_generated, reverse=True):
-#     date_str = date.strftime('%Y%m%d')
-#     get_news_list(date_str)
-
-# get_news_list(datetime.today().strftime('%Y%m%d'))
 get_news_list((datetime.today()-timedelta(days=1)).strftime('%Y%m%d'))
 
 mydb.commit()
