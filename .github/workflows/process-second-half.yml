@@ -1,4 +1,4 @@
-name: Run First  Crawler2
+name: Run First Half Crawler2
 
 on:
   workflow_run:
