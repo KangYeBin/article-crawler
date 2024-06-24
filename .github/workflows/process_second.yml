@@ -6,8 +6,9 @@ on:
   workflow_dispatch: # 수동으로 실행할 수 있는 옵션
 
 jobs:
-  run-crawler:
+  run-crawler2:
     runs-on: ubuntu-latest
+    needs: run-crawler
 
     steps:
       - name: Checkout repository
