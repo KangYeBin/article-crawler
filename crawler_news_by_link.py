@@ -197,13 +197,14 @@ def get_news_list(date):
         second_half_links = total_links[mid_index:]
 
         # 추출한 정보 출력
-        for i, link in enumerate(first_half_links):
+        for i, headline in enumerate(headlines):
             if i > 0 and i % 10 == 0:  # 10개의 URL마다 WebDriver 재생성
                 driver.quit()
                 kill_chromedriver_processes()
                 driver = create_webdriver()
 
             try:
+                link = headline.parent.a['href']
                 get_article_content(link)
             except WebDriverException as e:
                 print(f"Exception occurred: {e}. Restarting WebDriver.")
@@ -216,6 +217,17 @@ def get_news_list(date):
                   
     finally:
         driver.quit()
+
+
+# # 날짜 범위 설정 (start_date부터 end_date까지)
+# start_date = datetime.strptime('20240617', '%Y%m%d')
+# end_date = datetime.strptime('20240617', '%Y%m%d')
+# date_generated = [start_date + timedelta(days=x) for x in range(0, (end_date - start_date).days + 1)]
+
+# # 날짜를 역순으로 처리하여 크롤링
+# for date in sorted(date_generated, reverse=True):
+#     date_str = date.strftime('%Y%m%d')
+#     get_news_list(date_str)
 
 # get_news_list(datetime.today().strftime('%Y%m%d'))
 get_news_list((datetime.today()-timedelta(days=1)).strftime('%Y%m%d'))
