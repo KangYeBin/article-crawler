@@ -162,7 +162,6 @@ def get_article_content(article_url):
     finally:
         delete_query = "DELETE FROM tbl_keywords WHERE keyword REGEXP '^[가-힣]$';"
         mycursor.execute(delete_query)
-        mydb.commit()
         driver.quit()
 
 
@@ -211,6 +210,7 @@ def get_news_list(date):
 
             try:
                 get_article_content(link)
+                mydb.commit()
             except WebDriverException as e:
                 print(f"Exception occurred: {e}. Restarting WebDriver.")
                 driver.quit()
