@@ -96,12 +96,14 @@ def get_article_content(article_url):
             title = title.get_text(strip=True)
         else:
             title = '제목을 찾을 수 없습니다'
+            return
 
         text = soup.find(class_='_article_content')
         if text:
             text = text.get_text()
         else:
             text = '본문을 찾을 수 없습니다'
+            return
 
         created_date = soup.find(class_='_ARTICLE_DATE_TIME')
         if created_date:
@@ -109,18 +111,21 @@ def get_article_content(article_url):
             created_date = convert_to_datetime(created_date)
         else:
             created_date = '작성일을 찾을 수 없습니다'
+            return
 
         news_agency = soup.find(class_='media_end_head_top_logo_img')
         if news_agency:
             news_agency = news_agency.get('alt', '뉴스 기관을 찾을 수 없습니다')
         else:
             news_agency = '뉴스 기관을 찾을 수 없습니다'
+            return
 
         writer = soup.find(class_='byline_s')
         if writer:
             writer = writer.get_text(strip=True)
         else:
             writer = '기자를 찾을 수 없습니다'
+            return
         
         img = soup.find(id='img1')
         if img:
@@ -157,6 +162,7 @@ def get_article_content(article_url):
     finally:
         delete_query = "DELETE FROM tbl_keywords WHERE keyword REGEXP '^[가-힣]$';"
         mycursor.execute(delete_query)
+        mydb.commit()
         driver.quit()
 
 
