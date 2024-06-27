@@ -223,8 +223,8 @@ def get_news_list(date):
     finally:
         driver.quit()
 
-# get_news_list(datetime.today().strftime('%Y%m%d'))
-get_news_list((datetime.today()).strftime('%Y%m%d'))
+# get_news_list((datetime.today()).strftime('%Y%m%d'))
+get_news_list((datetime.today()-timedelta(days=1)).strftime('%Y%m%d'))
 
 mydb.commit()
 # mydb.rollback() -> 예외 처리와 함께 사용해서, 중간에 에러가 발생했을 시 롤백 처리
